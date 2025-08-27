@@ -53,7 +53,7 @@ export function TransactionsFilters({
    };
 
    return (
-      <div className="flex flex-col gap-4 px-4 sm:px-0">
+      <div className="flex flex-col gap-4">
          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <div className="md:mr-auto flex w-full md:w-fit">
                <Select

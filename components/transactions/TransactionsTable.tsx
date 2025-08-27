@@ -176,7 +176,7 @@ export function TransactionsTable({
          </div>
 
          {/* Mobile Cards */}
-         <div className="md:hidden space-y-4 p-4">
+         <div className="md:hidden space-y-4 sm:p-4">
             {transactions.map((transaction) => (
                <div
                   key={transaction.id}
