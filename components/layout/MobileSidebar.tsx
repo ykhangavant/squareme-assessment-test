@@ -21,8 +21,17 @@ const navigation = [
    { name: "Settings", href: "/settings", icon: Settings },
 ];
 
-export function MobileSidebar() {
+interface MobileSidebarProps {
+   onNavigate?: () => void;
+}
+
+export function MobileSidebar({ onNavigate }: MobileSidebarProps) {
    const pathname = usePathname();
+
+   const handleLinkClick = () => {
+      // Call the onNavigate callback to close the mobile menu
+      onNavigate?.();
+   };
 
    return (
       <div className="flex flex-col h-full bg-white">
@@ -34,6 +43,7 @@ export function MobileSidebar() {
                   <Link
                      key={item.name}
                      href={item.href}
+                     onClick={handleLinkClick}
                      className={cn(
                         "flex items-center px-6 py-4 text-sm font-medium transition-colors",
                         isActive

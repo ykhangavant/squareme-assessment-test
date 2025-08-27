@@ -10,16 +10,23 @@ import {
 } from "@/components/ui/sheet";
 import { Bell, Menu } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import { FaSortDown } from "react-icons/fa";
 import { MobileSidebar } from "./MobileSidebar";
 
 export function Header() {
+   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+   const closeMobileMenu = () => {
+      setIsMobileMenuOpen(false);
+   };
+
    return (
       <header className="bg-white border-b border-gray-200 px-4 lg:px-8 h-20 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
          {/* Left side - Logo and mobile menu */}
          <div className="flex items-center space-x-4">
             {/* Mobile menu button */}
-            <Sheet>
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                <SheetTrigger asChild>
                   <Button
                      variant="ghost"
@@ -32,7 +39,7 @@ export function Header() {
                </SheetTrigger>
                <SheetContent side="left" className="p-0 w-64">
                   <SheetTitle className="sr-only" />
-                  <MobileSidebar />
+                  <MobileSidebar onNavigate={closeMobileMenu} />
                </SheetContent>
             </Sheet>
 
