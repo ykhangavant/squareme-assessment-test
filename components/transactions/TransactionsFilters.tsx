@@ -74,7 +74,7 @@ export function TransactionsFilters({
 
                <Button
                   variant="outline"
-                  className="flex ml-auto sm:hidden items-center gap-2 w-fit sm:w-auto rounded-lg"
+                  className="flex ml-auto md:hidden items-center gap-2 w-fit sm:w-auto rounded-lg"
                >
                   <CloudUpload className="h-4 w-4" />
                   Export
@@ -82,8 +82,8 @@ export function TransactionsFilters({
             </div>
 
             <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-               <div className="flex items-center gap-4 w-full sm:w-fit">
-                  <p className="ml-2 mr-auto whitespace-nowrap text-gray-600 font-medium">
+               <div className="flex items-center gap-4 w-full md:w-fit justify-between">
+                  <p className="hidden sm:block ml-2 mr-auto whitespace-nowrap text-gray-600 font-medium">
                      Select Date Range:
                   </p>
                   <PopoverTrigger asChild>
@@ -113,7 +113,7 @@ export function TransactionsFilters({
 
             <Button
                variant="outline"
-               className="hidden sm:flex items-center gap-2 w-full sm:w-auto rounded-lg"
+               className="hidden md:flex items-center gap-2 w-full md:w-auto rounded-lg"
             >
                <CloudUpload className="h-4 w-4" />
                Export
