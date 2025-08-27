@@ -113,7 +113,7 @@ export function TransactionsTable({
    };
 
    return (
-      <div className="rounded-lg sm:border">
+      <div className="rounded-lg md:border">
          {/* Desktop Table */}
          <div className="hidden md:block">
             <Table>
