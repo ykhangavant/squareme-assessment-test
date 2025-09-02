@@ -18,14 +18,28 @@ vi.mock("next/navigation", () => ({
 
 // Mock Next.js Image component
 vi.mock("next/image", () => ({
-   default: ({ src, alt, ...props }: any) => {
+   default: ({
+      src,
+      alt,
+      ...props
+   }: {
+      src: string;
+      alt: string;
+   } & React.ImgHTMLAttributes<HTMLImageElement>) => {
       return React.createElement("img", { src, alt, ...props });
    },
 }));
 
 // Mock Next.js Link component
 vi.mock("next/link", () => ({
-   default: ({ children, href, ...props }: any) => {
+   default: ({
+      children,
+      href,
+      ...props
+   }: {
+      children?: React.ReactNode;
+      href: string;
+   } & React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
       return React.createElement("a", { href, ...props }, children);
    },
 }));

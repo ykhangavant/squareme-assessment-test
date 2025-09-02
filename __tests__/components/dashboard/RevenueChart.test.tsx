@@ -2,15 +2,16 @@ import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { RootState } from "@/store";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { mockDashboardData, renderWithProviders } from "../../test-utils";
 
 // Mock Recharts components
 vi.mock("recharts", () => ({
-   ResponsiveContainer: ({ children }: any) => (
+   ResponsiveContainer: ({ children }: { children?: ReactNode }) => (
       <div data-testid="responsive-container">{children}</div>
    ),
-   BarChart: ({ children }: any) => (
+   BarChart: ({ children }: { children?: ReactNode }) => (
       <div data-testid="bar-chart">{children}</div>
    ),
    Bar: () => <div data-testid="bar" />,
