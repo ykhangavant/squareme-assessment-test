@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
+import type { Mock } from "vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mockFilters, mockTransactions } from "../../test-utils";
+import { mockFilters } from "../../test-utils";
 
 // Mock the API module before importing anything else
 vi.mock("@/store/api/mockApi", () => ({
@@ -62,34 +63,38 @@ import transactionsReducer, {
    setFilters,
 } from "@/store/slices/transactionsSlice";
 
+// Helper to build a typed store for tests
+const setupStore = () =>
+   configureStore({
+      reducer: {
+         transactions: transactionsReducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+         getDefaultMiddleware({
+            serializableCheck: {
+               ignoredActions: ["persist/PERSIST", "transactions/setFilters"],
+               ignoredActionsPaths: [
+                  "meta.arg",
+                  "payload.timestamp",
+                  "payload.dateRange.from",
+                  "payload.dateRange.to",
+               ],
+               ignoredPaths: [
+                  "transactions.filters.dateRange.from",
+                  "transactions.filters.dateRange.to",
+               ],
+            },
+         }),
+   });
+
+type AppStore = ReturnType<typeof setupStore>;
+type RootState = ReturnType<AppStore["getState"]>;
+
 describe("transactionsSlice", () => {
-   let store: ReturnType<typeof configureStore>;
+   let store: AppStore;
 
    beforeEach(() => {
-      store = configureStore({
-         reducer: {
-            transactions: transactionsReducer,
-         },
-         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware({
-               serializableCheck: {
-                  ignoredActions: [
-                     "persist/PERSIST",
-                     "transactions/setFilters",
-                  ],
-                  ignoredActionsPaths: [
-                     "meta.arg",
-                     "payload.timestamp",
-                     "payload.dateRange.from",
-                     "payload.dateRange.to",
-                  ],
-                  ignoredPaths: [
-                     "transactions.filters.dateRange.from",
-                     "transactions.filters.dateRange.to",
-                  ],
-               },
-            }),
-      });
+      store = setupStore();
       vi.clearAllMocks();
    });
 
@@ -158,13 +163,11 @@ describe("transactionsSlice", () => {
          };
 
          store = configureStore({
-            reducer: {
-               transactions: transactionsReducer,
-            },
+            reducer: { transactions: transactionsReducer },
             preloadedState: {
-               transactions: initialState,
+               transactions: initialState as RootState["transactions"],
             },
-         });
+         }) as AppStore;
 
          store.dispatch(clearError());
          const state = store.getState().transactions;
@@ -195,8 +198,10 @@ describe("transactionsSlice", () => {
       });
 
       it("handles rejected state correctly", async () => {
-         const mockApi = vi.mocked(await import("@/store/api/mockApi")).mockApi;
-         mockApi.getTransactions.mockRejectedValueOnce(new Error("API Error"));
+         const apiModule = await import("@/store/api/mockApi");
+         const getTransactions = apiModule.mockApi
+            .getTransactions as unknown as Mock;
+         getTransactions.mockRejectedValueOnce(new Error("API Error"));
 
          const action = await store.dispatch(
             fetchTransactions({ page: 1, filters: mockFilters })
@@ -210,14 +215,16 @@ describe("transactionsSlice", () => {
       });
 
       it("calls API with correct page parameter", async () => {
-         const mockApi = vi.mocked(await import("@/store/api/mockApi")).mockApi;
-         mockApi.getTransactions.mockClear();
+         const apiModule = await import("@/store/api/mockApi");
+         const getTransactions = apiModule.mockApi
+            .getTransactions as unknown as Mock;
+         getTransactions.mockClear();
 
          await store.dispatch(
             fetchTransactions({ page: 2, filters: mockFilters })
          );
 
-         expect(mockApi.getTransactions).toHaveBeenCalledWith(2);
+         expect(getTransactions).toHaveBeenCalledWith(2);
       });
 
       it("handles different page numbers correctly", async () => {
@@ -270,8 +277,10 @@ describe("transactionsSlice", () => {
 
    describe("error handling", () => {
       it("provides default error message when none is provided", async () => {
-         const mockApi = vi.mocked(await import("@/store/api/mockApi")).mockApi;
-         mockApi.getTransactions.mockRejectedValueOnce(new Error());
+         const apiModule = await import("@/store/api/mockApi");
+         const getTransactions = apiModule.mockApi
+            .getTransactions as unknown as Mock;
+         getTransactions.mockRejectedValueOnce(new Error());
 
          await store.dispatch(
             fetchTransactions({ page: 1, filters: mockFilters })
@@ -282,8 +291,10 @@ describe("transactionsSlice", () => {
       });
 
       it("preserves custom error messages", async () => {
-         const mockApi = vi.mocked(await import("@/store/api/mockApi")).mockApi;
-         mockApi.getTransactions.mockRejectedValueOnce(
+         const apiModule = await import("@/store/api/mockApi");
+         const getTransactions = apiModule.mockApi
+            .getTransactions as unknown as Mock;
+         getTransactions.mockRejectedValueOnce(
             new Error("Custom error message")
          );
 
