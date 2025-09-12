@@ -1,4 +1,4 @@
-# FundR Dashboard
+## FundR Dashboard
 
 A modern, responsive financial dashboard built with Next.js 15, TypeScript, Redux Toolkit, and Tailwind CSS.
 
